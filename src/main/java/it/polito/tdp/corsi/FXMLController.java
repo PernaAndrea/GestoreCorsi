@@ -5,7 +5,11 @@
 package it.polito.tdp.corsi;
 
 import java.net.URL;
+import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
+
+import it.polito.tdp.corsi.model.Corso;
 import it.polito.tdp.corsi.model.Model;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -47,10 +51,65 @@ public class FXMLController {
     @FXML
     void corsiPerPeriodo(ActionEvent event) {
     	
+    	txtRisultato.clear();
+    	//recupero l input dell utente e faccio un controllo
+    	
+    	String periodoStringa = txtPeriodo.getText();
+    	Integer periodo;
+    	try {
+    		periodo = Integer.parseInt(periodoStringa);
+    		
+    	}catch(NumberFormatException ne) {
+    		txtRisultato.setText("Devi inserire un numero ( 1 o 2 ) per definire il preiodo didattico !");
+    		return;	
+    	}catch(NullPointerException npe) {
+    		txtRisultato.setText("Devi inserire un numero ( 1 o 2 ) per definire il preiodo didattico !");
+    		return;
+    	}
+    	//controllo anche la validita del periodo 
+    	if(periodo<1 || periodo>2) {
+    		txtRisultato.setText("Devi inserire un numero ( 1 o 2 ) per definire il preiodo didattico !");
+    		return;
+    	}//fine dei controlli sul valore del perioso inserito in input
+    	
+    	//richiamo la mia lista 
+    	List<Corso> corsi = this.model.getCorsiByPeriodo(periodo);
+    	//stampo i corsi in output
+    	for(Corso c : corsi) {
+    		txtRisultato.appendText(c.toString()+" \n");
+    	}
     }
 
     @FXML
     void numeroStudenti(ActionEvent event) {
+    	txtRisultato.clear();
+    	//recupero l input dell utente e faccio un controllo copiato dal metodo prima!!!!!
+    	
+    	String periodoStringa = txtPeriodo.getText();
+    	Integer periodo;
+    	try {
+    		periodo = Integer.parseInt(periodoStringa);
+    		
+    	}catch(NumberFormatException ne) {
+    		txtRisultato.setText("Devi inserire un numero ( 1 o 2 ) per definire il preiodo didattico !");
+    		return;	
+    	}catch(NullPointerException npe) {
+    		txtRisultato.setText("Devi inserire un numero ( 1 o 2 ) per definire il preiodo didattico !");
+    		return;
+    	}
+    	//controllo anche la validita del periodo 
+    	if(periodo<1 || periodo>2) {
+    		txtRisultato.setText("Devi inserire un numero ( 1 o 2 ) per definire il preiodo didattico !");
+    		return;
+    	}//fine dei controlli sul valore del perioso inserito in input
+    	
+    	Map<Corso,Integer> corsiIscrizioni = this.model.getIscrittiByPeriodo(periodo);
+    	//stampo i corsi 
+    	for(Corso c : corsiIscrizioni.keySet()) {
+    		txtRisultato.appendText(c.toString());
+    		Integer n = corsiIscrizioni.get(c);
+    		txtRisultato.appendText("\t "+ n+ "\n");
+    	}
     	
     }
 
@@ -79,6 +138,5 @@ public class FXMLController {
     public void setModel(Model model) {
     	this.model = model;
     }
-    
-    
+  
 }
