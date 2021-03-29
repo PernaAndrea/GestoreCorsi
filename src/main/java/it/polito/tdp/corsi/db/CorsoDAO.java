@@ -55,7 +55,7 @@ public class CorsoDAO {
 				String sql = "SELECT c.codins, c.nome, c.crediti, c.pd, COUNT(*) AS tot "
 						+ "FROM corso c, iscrizione i "
 						+ "WHERE c.codins=i.codins AND c.pd=? "
-						+ "GROUP BY c.codins, c.nome, c.crediti, c.pd ";
+						+ "GROUP BY c.codins, c.nome, c.crediti, c.pd ";//di solito nella group by si mettono tutti gli attributi citati nel select fino al count
 				//devo togliere \n e mettere uno spazio dopo ogni fine riga 
 						
 				//definisco la struttura dati da richiamare 
