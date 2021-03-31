@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import it.polito.tdp.corsi.model.Corso;
+import it.polito.tdp.corsi.model.Studente;
 
 public class CorsoDAO {
 	
@@ -85,5 +86,64 @@ public class CorsoDAO {
 		
 	}
 	
+	public List<Studente> getStudentiByCorso(Corso corso){
+		
+		// il pattern del metodo DAO e piu o meno sempre lo stesso
+		//dopo aver provato la query su Sequel Pro le inserisco qui 
+		String sql = "SELECT s.matricola, s.nome, s.cognome,s.CDS FROM iscrizione i,studente s WHERE s.matricola = i.matricola AND i.codins = ?";//di solito nella group by si mettono tutti gli attributi citati nel select fino al count
+		//devo togliere \n e mettere uno spazio dopo ogni fine riga 
+				
+		
+		//definisco la struttura dati da richiamare 
+		ArrayList<Studente> result = new ArrayList<Studente>();
+		
+		try {
+			Connection conn = DBConnect.getConnection();
+			PreparedStatement st = conn.prepareStatement(sql);
+			st.setString(1, corso.getCodins());//1 sta a dire il primo parametro '?' nella query
+			ResultSet rs = st.executeQuery();
+			
+			while(rs.next()) {
+				Studente s = new Studente(rs.getInt("matricola"),rs.getString("nome"),rs.getString("cognome"),rs.getString("CDS"));
+				result.add(s);
+			}
+			
+			rs.close();
+			st.close();
+			conn.close();
+			
+		}catch(SQLException e) {
+			throw new RuntimeException(e);
+		}
+		
+		return result;
+	}
+
+	public boolean esisteCorso(Corso corso) {
+		// TODO Auto-generated method stub
+		String sql =" SELECT * FROM corso WHERE codins= ? ";
+		try {
+			Connection conn = DBConnect.getConnection();
+			PreparedStatement st = conn.prepareStatement(sql);
+			st.setString(1, corso.getCodins());//1 sta a dire il primo parametro '?' nella query
+			ResultSet rs = st.executeQuery();
+			
+			if(rs.next()) {
+				rs.close(); //DEVO CHIUDERE QUI TUTTI I FLUSSI PERCHE POI HO DELLE RETURN SUBITO DOPOOOOOO
+				st.close();
+				conn.close();
+				return true;
+			}else {
+				rs.close();// LO STESSSO VALE QUI
+				st.close();
+				conn.close();
+				return false;
+			}
+			
+			
+		}catch(SQLException e) {
+			throw new RuntimeException(e);
+		}
+	}
 	
 }

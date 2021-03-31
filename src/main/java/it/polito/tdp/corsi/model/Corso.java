@@ -76,7 +76,7 @@ public class Corso {
 	//ho creato anche il toString per essere tranquillo
 	@Override
 	public String toString() {
-		return "Corso [codins=" + codins + ", crediti=" + crediti + ", nome=" + nome + ", pd=" + pd + "]";
+		return "Corso codins=" + codins + ", crediti=" + crediti + ", nome=" + nome + ", pd=" + pd ;
 	}
 	
 	

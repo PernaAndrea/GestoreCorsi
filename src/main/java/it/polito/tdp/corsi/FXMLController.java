@@ -11,6 +11,7 @@ import java.util.ResourceBundle;
 
 import it.polito.tdp.corsi.model.Corso;
 import it.polito.tdp.corsi.model.Model;
+import it.polito.tdp.corsi.model.Studente;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -75,9 +76,21 @@ public class FXMLController {
     	//richiamo la mia lista 
     	List<Corso> corsi = this.model.getCorsiByPeriodo(periodo);
     	//stampo i corsi in output
+    	/*
     	for(Corso c : corsi) {
     		txtRisultato.appendText(c.toString()+" \n");
     	}
+    	*/
+    	//miglioro la mia stampa
+    	txtRisultato.setStyle("-fx-font-family: monospace");//setto correttamente il valore della text area
+    	StringBuilder sb = new StringBuilder();
+    	for(Corso c : corsi) {
+    		sb.append(String.format("%-8s",c.getCodins()));//il percentuale lo fa sostituire
+    		sb.append(String.format("%-4s",c.getCrediti()));// il meno lo allinea a sx
+    		sb.append(String.format("%-50s",c.getNome()));//il numero indica quanto larga fare la colonna
+    		sb.append(String.format("%-4d\n",c.getCrediti())); //la lettera 'd' e 's' stanno a significare il tipo String o int
+    	}
+    	txtRisultato.appendText(sb.toString());
     }
 
     @FXML
@@ -115,12 +128,37 @@ public class FXMLController {
 
     @FXML
     void stampaDivisione(ActionEvent event) {
-
+    	txtRisultato.clear();
+    	String codice = txtCorso.getText();
+    	
+    	if(!model.esisteCorso(codice)) {
+    		txtRisultato.appendText("Il corso non esiste");
+    		return;
+    	}
+    	Map<String,Integer> divisione = model.getDivisioneCDS(codice);
+    	
+    	for(String cds:divisione.keySet()) {
+    		txtRisultato.appendText(cds +" "+divisione.get(cds)+"\n");
+    	}
     }
 
     @FXML
     void stampaStudenti(ActionEvent event) {
-
+    	txtRisultato.clear();
+    	String codice = txtCorso.getText();
+    	
+    	if(!model.esisteCorso(codice)) {
+    		txtRisultato.appendText("Il corso non esiste");
+    		return;
+    	}
+    	List<Studente> studenti = model.getStudentiByCorso(codice);
+    	
+    	if(studenti.size()==0) {
+    		txtRisultato.appendText("Il Corso non ha iscritti ");
+    	}
+    	for(Studente s : studenti){
+    		txtRisultato.appendText(s+"\n");
+    	}
     }
 
     @FXML // This method is called by the FXMLLoader when initialization is complete
